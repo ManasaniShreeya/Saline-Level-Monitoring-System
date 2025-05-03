@@ -2,7 +2,7 @@
 
 ## 📘 Project Overview
 
-This project aims to **prevent reverse blood flow** in patients by continuously monitoring the **saline bottle weight** using the **HX711 weight sensor** and **Arduino Uno**. When the saline level drops below a safe threshold, a **buzzer alert** notifies medical staff for immediate action.
+This project presents a real-time monitoring system for saline bottles using an **HX711 load cell** and **Arduino Uno**. The system triggers a **buzzer alert** when the saline level drops below a preset weight, preventing reverse blood flow into a patient—a critical safety issue in hospital care.
 
 ---
 
@@ -21,60 +21,35 @@ This project aims to **prevent reverse blood flow** in patients by continuously 
 
 ## 🔌 Circuit Connections
 
-### HX711 to Arduino:
-| HX711 Pin | Arduino Pin |
-|-----------|-------------|
-| VCC       | 5V          |
-| GND       | GND         |
-| DT        | D3          |
-| SCK       | D2          |
-
-### Buzzer:
-- Positive → D9  
-- Negative → GND
-
-### LDR (Optional):
-- AO → A0  
-- VCC → 5V  
-- GND → GND
+- **HX711** is connected to Arduino using pins D2 (SCK) and D3 (DT).
+- **Buzzer** is connected to pin D9 for alerts.
+- **Optional LDR** is connected to analog pin A0 for ambient light detection.
+- All modules are powered via Arduino's 5V and GND.
 
 ---
 
-## 💻 Arduino Code
+## 🧠 How It Works
 
-```cpp
-#include "HX711.h"
+- The **load cell** measures the real-time weight of the saline bottle.
+- When the weight drops below a **safe threshold**, the **buzzer is activated** to notify medical staff.
+- The system ensures that action is taken before the saline bottle empties and reverse blood flow begins.
+- The **LDR** can optionally provide context-aware behavior (e.g., silent mode at night).
 
-#define DOUT  3
-#define CLK   2
-#define BUZZER_PIN 9
+---
 
-HX711 scale;
+## 📊 Features
 
-void setup() {
-  Serial.begin(9600);
-  scale.begin(DOUT, CLK);
-  pinMode(BUZZER_PIN, OUTPUT);
-  Serial.println("Initializing scale...");
-  scale.set_scale();
-  scale.tare();  // Reset the scale to 0
+- Accurate saline level detection using weight sensing.
+- Real-time buzzer alert when critical levels are reached.
+- Can be customized for different bottle sizes and thresholds.
+- Optional ambient light sensing.
+- Scalable and affordable for hospital-wide deployment.
 
-  long zero_factor = scale.read_average(); 
-  Serial.print("Zero factor: "); 
-  Serial.println(zero_factor);
-}
+---
 
-void loop() {
-  float weight = scale.get_units(5);
-  Serial.print("Weight: ");
-  Serial.print(weight);
-  Serial.println(" grams");
+## 🚀 Future Enhancements
 
-  if (weight < 100) { // Threshold to trigger alarm
-    digitalWrite(BUZZER_PIN, HIGH);
-  } else {
-    digitalWrite(BUZZER_PIN, LOW);
-  }
-
-  delay(1000);
-}
+- Integration with Wi-Fi modules for remote alerts.
+- LCD display to show exact saline weight.
+- Multiple sensor support for multiple patients.
+- Battery backup for uninterrupted monitoring.
